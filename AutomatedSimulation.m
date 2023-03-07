@@ -5,6 +5,18 @@ clc
 % if simulation through Simulink, variable to workspace is called out.
 % if simulation through MATLAB, variable to workspace is called ans.
 
+%% Include subfolders for Simulink subsystems (otherwise for simulation trough MATLAB same folder..)
+% when you you close MATLAB, path is restored
+cd simulink_models\
+addpath(genpath(pwd))
+cd ..
+
+%% Include subfolders for MATLAB functions
+% when you you close MATLAB, path is restored
+cd matlab_functions\
+addpath(genpath(pwd))
+cd ..
+
 %% Tracking
 % Decide initial pose
 disp(['Reference trajectory has initial x of: ', num2str(x_sim(1,2))])
@@ -23,7 +35,6 @@ dist_i_XY = sqrt((dist_x_i)^2+(dist_y_i)^2);
 % Controller - State Feedback
 a = 3; % natural frequency (w_n>0)
 zeta = 0.5; % damping ratio (0<ζ<1)
-plot_Eigs(a,zeta);
 
 % Controller - Output Feedback
 b = 0.75;
@@ -44,20 +55,20 @@ switch n
     case 1
         disp('State_Feedback_Linear')
         tracking_controller = 'State_Feedback_Linear';
-        sim('./State_Feedback_Linear.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
+        sim('./simulink_models/State_Feedback_Linear.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
         plot_Eigs(a,zeta);
     case 2
         disp('State_Feedback_NON_Linear')
         tracking_controller = 'State_Feedback_NON_Linear';
-        sim('./State_Feedback_NON_Linear.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
+        sim('./simulink_models/State_Feedback_NON_Linear.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
     case 3
         disp('Output_Feedback')
         tracking_controller = 'Output_Feedback';
-        sim('./Output_Feedback_MATLAB.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
+        sim('./simulink_models/Output_Feedback_MATLAB.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
     case 4
         disp('Z_Feedback')
         tracking_controller = 'Z_Feedback';
-        sim('./Z_Feedback_MATLAB.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
+        sim('./simulink_models/Z_Feedback_MATLAB.slx','StopTime',num2str(t(end))) % ('SolverType', 'ode45')
     otherwise
         error('Inserted number not valid')
         return
@@ -159,15 +170,15 @@ switch n
     case 5
         disp('Cartesian_Regulation')
         reg_controller = 'Cartesian_Regulation';
-        sim('./Cartesian_Regulation.slx','StopTime',num2str(Sim_Time),'FixedStep',num2str(Step_size_Regulation))
+        sim('./simulink_models/Cartesian_Regulation.slx','StopTime',num2str(Sim_Time),'FixedStep',num2str(Step_size_Regulation))
     case 6
         disp('Posture_Regulation_Singularity')
         reg_controller = 'Posture_Regulation_Singularity';
-        sim('./Posture_Regulation_Singularity.slx','StopTime',num2str(Sim_Time),'FixedStep',num2str(Step_size_Regulation))
+        sim('./simulink_models/Posture_Regulation_Singularity.slx','StopTime',num2str(Sim_Time),'FixedStep',num2str(Step_size_Regulation))
     case 7
         disp('Posture_Regulation_NO_Singularity')
         reg_controller = 'Posture_Regulation_NO_Singularity';
-        sim('./Posture_Regulation_NO_Singularity.slx','StopTime',num2str(Sim_Time),'FixedStep',num2str(Step_size_Regulation))
+        sim('./simulink_models/Posture_Regulation_NO_Singularity.slx','StopTime',num2str(Sim_Time),'FixedStep',num2str(Step_size_Regulation))
     otherwise
         error('Inserted number not valid')
         return
